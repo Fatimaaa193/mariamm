@@ -1,0 +1,819 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mohamed &amp; Mariam | Save the Date</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Cinzel:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+  :root{
+    --cream:#FBF3E6;
+    --cream-deep:#F1E2C9;
+    --parchment:#F6EBD9;
+    --gold:#B98A34;
+    --gold-light:#E3C377;
+    --gold-dark:#8C6423;
+    --blush:#C88A98;
+    --blush-deep:#8C3450;
+    --lavender:#C88A98;
+    --lavender-deep:#8C3450;
+    --plum:#6E2439;
+    --plum-deep:#4E1626;
+    --ink:#3C2A2A;
+    --sage:#9CA37A;
+    --wine:#6E2439;
+    --wine-deep:#4E1626;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    margin:0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family:'Cormorant Garamond', serif;
+    overflow-x:hidden;
+  }
+
+  .serif-display{ font-family:'Cinzel', serif; }
+  .script{ font-family:'Alex Brush', cursive; }
+
+  /* ================= ENVELOPE INTRO ================= */
+
+  #envelope-screen{
+    position:fixed;
+    inset:0;
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 4vh 0;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(110,36,57,0.16), transparent 55%),
+      linear-gradient(180deg, var(--cream) 0%, var(--cream-deep) 55%, var(--parchment) 100%);
+    transition: opacity 1.1s ease, visibility 1.1s ease;
+  }
+  #envelope-screen.hidden{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+  }
+  #envelope-screen .es-corner{
+    position:absolute;
+    width:120px;
+    height:120px;
+    opacity:0.9;
+  }
+  #envelope-screen .es-corner.tl{ top:0; left:0; }
+  #envelope-screen .es-corner.br{ bottom:0; right:0; transform:scale(-1,-1); }
+
+  .envelope{
+    position:relative;
+    width:min(88vw, 400px);
+    height:min(80vh, 640px);
+    cursor:pointer;
+    filter: drop-shadow(0 14px 34px rgba(78,22,38,0.28));
+  }
+
+  .env-body{
+    position:absolute;
+    inset:0;
+    background: linear-gradient(180deg, var(--parchment), var(--cream-deep));
+    border:1px solid var(--wine);
+    border-radius:4px;
+  }
+  .env-body::after{
+    content:'';
+    position:absolute;
+    inset:6px;
+    border:1px solid rgba(185,138,52,0.55);
+    border-radius:2px;
+    pointer-events:none;
+  }
+
+  .env-shadow-left, .env-shadow-right{
+    position:absolute;
+    top:0; bottom:0;
+    width:50%;
+    background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.12));
+  }
+  .env-shadow-left{ left:0; clip-path: polygon(0 0, 100% 50%, 0 100%); }
+  .env-shadow-right{ right:0; clip-path: polygon(100% 0, 0 50%, 100% 100%); }
+
+  .env-flap{
+    position:absolute;
+    top:0; left:0; right:0;
+    height:40%;
+    background: linear-gradient(160deg, var(--cream-deep), var(--parchment));
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    border-bottom: 1px solid var(--wine);
+    transform-origin: top center;
+    transition: transform 1s cubic-bezier(.5,-0.2,.3,1.3), opacity .6s ease .3s;
+    z-index:5;
+  }
+
+  .envelope.open .env-flap{
+    transform: rotateX(178deg);
+    opacity:0;
+  }
+
+  .env-seal{
+    position:absolute;
+    top:40%;
+    left:50%;
+    width:64px;
+    height:64px;
+    transform: translate(-50%,-50%);
+    z-index:10;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background: radial-gradient(circle at 32% 28%, #8C3450, #4E1626 70%);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.08);
+    transition: transform .5s ease, opacity .4s ease;
+  }
+  .env-seal span{
+    font-family:'Cinzel', serif;
+    color:#E3C377;
+    font-size:20px;
+    letter-spacing:1px;
+  }
+  .envelope.open .env-seal{
+    transform: translate(-50%,-50%) scale(0.4) rotate(35deg);
+    opacity:0;
+  }
+
+  .env-card{
+    position:absolute;
+    left:8%;
+    right:8%;
+    bottom:6%;
+    height:0;
+    background: var(--cream);
+    border:1px solid var(--wine);
+    border-radius:2px;
+    z-index:3;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    overflow:hidden;
+    transition: height 1s cubic-bezier(.2,.7,.3,1) .5s, top 1s cubic-bezier(.2,.7,.3,1) .5s;
+  }
+  .envelope.open .env-card{
+    height:90%;
+    top:4%;
+  }
+  .env-card p{
+    margin:0;
+    padding:10px;
+    font-family:'Cinzel', serif;
+    color: var(--wine-deep);
+    font-size:13px;
+    letter-spacing:2px;
+  }
+
+  .env-hint{
+    margin-top: 22px;
+    text-align:center;
+    color: var(--wine);
+    font-family:'Cinzel', serif;
+    font-size:12px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    animation: pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{ opacity:.55 } 50%{ opacity:1 } }
+
+  .env-wrap{ display:flex; flex-direction:column; align-items:center; }
+
+  /* ================= MAIN SITE ================= */
+
+  #site{
+    opacity:0;
+    transition: opacity 1.2s ease;
+  }
+  #site.visible{ opacity:1; }
+
+  .frame-wrap{
+    position:relative;
+    max-width:900px;
+    margin:0 auto;
+    padding: 28px 18px;
+  }
+
+  section{
+    position:relative;
+    padding: 70px 5vw;
+    text-align:center;
+  }
+
+  .divider{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    margin: 26px auto;
+    width:min(320px, 70%);
+    color: var(--gold);
+  }
+  .divider::before, .divider::after{
+    content:'';
+    flex:1;
+    height:1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .divider svg{ width:20px; height:20px; flex-shrink:0; }
+
+  /* corner florals */
+  .corner{
+    position:absolute;
+    width:150px;
+    height:150px;
+    opacity:0.95;
+    pointer-events:none;
+    z-index:1;
+  }
+  .corner.tl{ top:-6px; left:-6px; }
+  .corner.tr{ top:-6px; right:-6px; transform: scaleX(-1); }
+  .corner.bl{ bottom:-6px; left:-6px; transform: scaleY(-1); }
+  .corner.br{ bottom:-6px; right:-6px; transform: scale(-1,-1); }
+
+  @media (max-width: 600px){
+    .corner{ width:96px; height:96px; }
+  }
+
+  /* ---- HERO ---- */
+  #hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding-top: 110px;
+    padding-bottom: 60px;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(230,195,119,0.14), transparent 60%),
+      var(--cream);
+  }
+  .eyebrow{
+    font-family:'Cinzel', serif;
+    letter-spacing:5px;
+    font-size:12px;
+    color: var(--gold-dark);
+    text-transform:uppercase;
+    opacity:0;
+    animation: rise .9s ease forwards .2s;
+  }
+  .save-date{
+    font-family:'Alex Brush', cursive;
+    font-size: clamp(56px, 13vw, 108px);
+    color: var(--plum);
+    line-height:0.95;
+    margin: 10px 0 6px;
+    opacity:0;
+    animation: rise 1s ease forwards .45s;
+  }
+  .couple-names{
+    font-family:'Cinzel', serif;
+    font-size: clamp(26px, 6vw, 42px);
+    letter-spacing:3px;
+    color: var(--ink);
+    margin: 6px 0;
+    opacity:0;
+    animation: rise 1s ease forwards .75s;
+  }
+  .couple-names .amp{
+    color: var(--gold);
+    font-family:'Alex Brush', cursive;
+    font-size:1.3em;
+    padding:0 6px;
+  }
+  .wed-date{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size: clamp(18px, 4vw, 24px);
+    letter-spacing:4px;
+    color: var(--gold-dark);
+    opacity:0;
+    animation: rise 1s ease forwards 1s;
+  }
+
+  @keyframes rise{
+    from{ opacity:0; transform: translateY(18px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+
+  .hero-flowers{
+    width:min(90%, 620px);
+    margin-top: 18px;
+    opacity:0;
+    animation: rise 1.2s ease forwards 1.2s;
+  }
+
+  /* ---- COUNTDOWN ---- */
+  #countdown{ padding-top:30px; }
+  .section-title{
+    font-family:'Cinzel', serif;
+    font-size: clamp(20px, 4vw, 28px);
+    letter-spacing:4px;
+    color: var(--plum);
+    text-transform:uppercase;
+  }
+  .section-sub{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    color: var(--gold-dark);
+    font-size:17px;
+    margin-top:2px;
+  }
+  .timer{
+    display:flex;
+    justify-content:center;
+    gap: clamp(10px, 3vw, 26px);
+    margin: 40px auto 0;
+    flex-wrap:wrap;
+  }
+  .timer .cell{
+    width: 92px;
+    padding: 18px 0 14px;
+    background: var(--parchment);
+    border: 1px solid var(--gold-light);
+    border-radius: 6px;
+    box-shadow: 0 6px 16px rgba(110,36,57,0.1);
+    position:relative;
+  }
+  .timer .cell::before{
+    content:'';
+    position:absolute;
+    inset:5px;
+    border:1px solid rgba(185,138,52,0.35);
+    border-radius:3px;
+    pointer-events:none;
+  }
+  .timer .num{
+    font-family:'Cinzel', serif;
+    font-size: clamp(26px, 5vw, 36px);
+    color: var(--plum);
+    display:block;
+    line-height:1;
+  }
+  .timer .lbl{
+    display:block;
+    margin-top:8px;
+    font-size:11px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color: var(--gold-dark);
+    font-family:'Cinzel', serif;
+  }
+
+  /* ---- DETAILS ---- */
+  .details-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 28px;
+    max-width:720px;
+    margin: 40px auto 0;
+    text-align:center;
+  }
+  .detail-card{
+    padding: 26px 18px;
+    background: var(--parchment);
+    border: 1px solid var(--gold-light);
+    border-radius: 8px;
+  }
+  .detail-icon{
+    width:34px;
+    height:34px;
+    margin: 0 auto 14px;
+    color: var(--gold-dark);
+  }
+  .detail-title{
+    font-family:'Cinzel', serif;
+    font-size:14px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color: var(--plum);
+    margin-bottom:8px;
+  }
+  .detail-text{
+    font-size:17px;
+    line-height:1.5;
+    color: var(--ink);
+  }
+
+  /* ---- RSVP ---- */
+  #rsvp{ background: linear-gradient(180deg, var(--cream), var(--cream-deep) 50%, var(--cream)); }
+  .rsvp-question{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size: clamp(20px, 4vw, 26px);
+    color: var(--ink);
+    max-width:480px;
+    margin: 26px auto 0;
+  }
+  .rsvp-buttons{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    margin-top: 30px;
+    flex-wrap:wrap;
+  }
+  .rsvp-btn{
+    font-family:'Cinzel', serif;
+    letter-spacing:2px;
+    font-size:13px;
+    text-transform:uppercase;
+    padding: 15px 34px;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--plum);
+    border-radius: 30px;
+    cursor:pointer;
+    transition: background .3s ease, color .3s ease, transform .2s ease;
+  }
+  .rsvp-btn:hover{ transform: translateY(-2px); }
+  .rsvp-btn.yes.selected{
+    background: var(--plum);
+    color: var(--gold-light);
+    border-color: var(--plum);
+  }
+  .rsvp-btn.no.selected{
+    background: var(--blush-deep);
+    color: #fff;
+    border-color: var(--blush-deep);
+  }
+  #rsvp-form{
+    max-width:420px;
+    margin: 30px auto 0;
+    display:none;
+    flex-direction:column;
+    gap:14px;
+  }
+  #rsvp-form.show{ display:flex; }
+  #rsvp-form input, #rsvp-form textarea{
+    font-family:'Cormorant Garamond', serif;
+    font-size:16px;
+    padding: 12px 16px;
+    border: 1px solid var(--gold-light);
+    border-radius:6px;
+    background: #fff;
+    color: var(--ink);
+  }
+  #rsvp-form input:focus, #rsvp-form textarea:focus{
+    outline: 1px solid var(--gold);
+  }
+  .submit-btn{
+    font-family:'Cinzel', serif;
+    letter-spacing:2px;
+    font-size:13px;
+    text-transform:uppercase;
+    padding:14px;
+    background: var(--gold);
+    color: #fff;
+    border:none;
+    border-radius:30px;
+    cursor:pointer;
+    transition: background .3s ease;
+  }
+  .submit-btn:hover{ background: var(--gold-dark); }
+
+  .rsvp-note{
+    margin-top:18px;
+    font-size:14px;
+    color: var(--gold-dark);
+    font-style:italic;
+  }
+
+  #rsvp-thanks{
+    display:none;
+    margin-top:28px;
+    font-family:'Alex Brush', cursive;
+    font-size:32px;
+    color: var(--plum);
+  }
+  #rsvp-thanks.show{ display:block; animation: rise .8s ease forwards; }
+
+  /* ---- LOCATION ---- */
+  .map-link-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    margin-top:28px;
+    padding: 15px 36px;
+    background: var(--plum);
+    color: var(--gold-light);
+    text-decoration:none;
+    border-radius:30px;
+    font-family:'Cinzel', serif;
+    letter-spacing:2px;
+    font-size:13px;
+    text-transform:uppercase;
+    transition: background .3s ease, transform .2s ease;
+  }
+  .map-link-btn:hover{ background: var(--plum-deep); transform: translateY(-2px); }
+  .map-link-btn svg{ width:18px; height:18px; }
+
+  /* ---- FOOTER ---- */
+  #footer{
+    padding: 60px 5vw 50px;
+    text-align:center;
+  }
+  .footer-script{
+    font-family:'Alex Brush', cursive;
+    font-size: clamp(30px, 6vw, 44px);
+    color: var(--plum);
+  }
+  .footer-sub{
+    margin-top:6px;
+    font-size:14px;
+    letter-spacing:3px;
+    color: var(--gold-dark);
+    font-family:'Cinzel', serif;
+    text-transform:uppercase;
+  }
+  .heart{
+    margin-top:18px;
+    color: var(--blush-deep);
+    font-size:18px;
+  }
+
+  .reveal{
+    opacity:0;
+    transform: translateY(24px);
+    transition: opacity .9s ease, transform .9s ease;
+  }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+</style>
+</head>
+<body>
+
+<div id="envelope-screen">
+  <svg class="es-corner tl" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#floral-corner-wine"></use></svg>
+  <svg class="es-corner br" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#floral-corner-wine"></use></svg>
+  <div class="env-wrap">
+    <div class="envelope" id="envelope">
+      <div class="env-shadow-left"></div>
+      <div class="env-shadow-right"></div>
+      <div class="env-body"></div>
+      <div class="env-card"><p>Mohamed &amp; Mariam<br>10 . 08 . 2026</p></div>
+      <div class="env-flap"></div>
+      <div class="env-seal"><span>M&amp;M</span></div>
+    </div>
+    <div class="env-hint">Tap the seal to open</div>
+  </div>
+</div>
+
+<div id="site">
+<div class="frame-wrap">
+
+<section id="hero">
+  <svg class="corner tl" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <use href="#floral-corner"></use>
+  </svg>
+  <svg class="corner tr" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <use href="#floral-corner"></use>
+  </svg>
+
+  <div class="eyebrow">Together with their families</div>
+  <div class="save-date">Save the Date</div>
+  <div class="couple-names">Mohamed<span class="amp">&amp;</span>Mariam</div>
+  <div class="wed-date">10 . 08 . 2026</div>
+
+  <svg class="hero-flowers" viewBox="0 0 620 70" xmlns="http://www.w3.org/2000/svg">
+    <use href="#floral-strand"></use>
+  </svg>
+</section>
+
+<section id="countdown" class="reveal">
+  <div class="section-title">Counting down to forever</div>
+  <div class="divider">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 21s-7-5.5-9.5-9C0.5 8.5 2 4 6 4c2.2 0 3.6 1.3 6 4 2.4-2.7 3.8-4 6-4 4 0 5.5 4.5 3.5 8-2.5 3.5-9.5 9-9.5 9z"/></svg>
+  </div>
+  <div class="timer" id="timer">
+    <div class="cell"><span class="num" id="dd">00</span><span class="lbl">Days</span></div>
+    <div class="cell"><span class="num" id="hh">00</span><span class="lbl">Hours</span></div>
+    <div class="cell"><span class="num" id="mm">00</span><span class="lbl">Minutes</span></div>
+    <div class="cell"><span class="num" id="ss">00</span><span class="lbl">Seconds</span></div>
+  </div>
+</section>
+
+<section id="details" class="reveal">
+  <div class="section-title">A Few Kind Notes</div>
+  <div class="section-sub">for our beloved guests</div>
+  <div class="details-grid">
+    <div class="detail-card">
+      <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 3c-2 3-5 5-5 9a5 5 0 0 0 10 0c0-4-3-6-5-9z"/><path d="M12 17v4M9 21h6"/></svg>
+      <div class="detail-title">Dress Code</div>
+      <div class="detail-text">Elegant attire is welcome<br>Kindly avoid wearing white,<br>reserved for the bride</div>
+    </div>
+    <div class="detail-card">
+      <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="9" cy="8" r="3"/><circle cx="18" cy="16" r="2.2"/><path d="M4 20c0-3 2.5-5 5-5s5 2 5 5"/></svg>
+      <div class="detail-title">Little Ones</div>
+      <div class="detail-text">We happily welcome<br>one child per family</div>
+    </div>
+  </div>
+</section>
+
+<section id="rsvp" class="reveal">
+  <div class="section-title">Kindly RSVP</div>
+  <div class="rsvp-question">We would be truly delighted to celebrate this day with you.<br>Will you be joining us?</div>
+  <div class="rsvp-buttons">
+    <button class="rsvp-btn yes" id="btn-yes">Joyfully Yes</button>
+    <button class="rsvp-btn no" id="btn-no">Regretfully No</button>
+  </div>
+
+  <form id="rsvp-form">
+    <input type="text" id="rsvp-name" placeholder="Your full name" required>
+    <input type="number" id="rsvp-guests" min="0" max="1" placeholder="Children attending (0 or 1)">
+    <textarea id="rsvp-note" rows="3" placeholder="A wish for the couple (optional)"></textarea>
+    <button type="submit" class="submit-btn">Confirm Response</button>
+  </form>
+  <div class="rsvp-note">One child per family, please &middot; No white attire, please</div>
+  <div id="rsvp-thanks"></div>
+</section>
+
+<section id="location" class="reveal">
+  <div class="section-title">Find Us There</div>
+  <div class="section-sub">we can't wait to welcome you</div>
+  <a class="map-link-btn" href="https://maps.google.com/maps/place//data=!4m2!3m1!1s0x145855f8570a8def:0x43e1f3916f80d4fd?entry=s&sa=X&ved=2ahUKEwi88IGE-f2VAxWeVKQEHVkzDrEQ4kB6BAgVEAA&hl=en" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-7.5-7-12a7 7 0 0 1 14 0c0 4.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>
+    View Location on Map
+  </a>
+</section>
+
+<section id="footer">
+  <svg class="corner bl" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <use href="#floral-corner"></use>
+  </svg>
+  <svg class="corner br" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <use href="#floral-corner"></use>
+  </svg>
+  <div class="footer-script">With Love,</div>
+  <div class="footer-sub">Mohamed &amp; Mariam</div>
+  <div class="heart">&#10084;</div>
+</section>
+
+</div>
+</div>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="floral-rose">
+      <circle cx="0" cy="0" r="9" fill="#4E1626"/>
+      <circle cx="0" cy="0" r="6.2" fill="#6E2439"/>
+      <circle cx="0" cy="0" r="3.4" fill="#C88A98"/>
+    </g>
+    <g id="floral-peony">
+      <circle cx="0" cy="0" r="11" fill="#6E2439" opacity="0.9"/>
+      <circle cx="0" cy="0" r="8" fill="#8C3450"/>
+      <circle cx="0" cy="0" r="4.5" fill="#D9AEB8"/>
+    </g>
+    <g id="floral-bud">
+      <ellipse cx="0" cy="0" rx="4.5" ry="6.5" fill="#E3C377"/>
+      <ellipse cx="0" cy="0" rx="2.2" ry="3.4" fill="#B98A34"/>
+    </g>
+    <g id="floral-leaf">
+      <path d="M0 0 C 10 -4 16 -12 14 -22 C 6 -18 -1 -8 0 0 Z" fill="#9CA37A"/>
+    </g>
+
+    <g id="floral-corner">
+      <path d="M8 8 C 30 6 60 6 90 20 C 55 12 30 14 12 30" stroke="#B98A34" stroke-width="1" fill="none" opacity="0.55"/>
+      <path d="M8 8 C 6 30 6 60 20 90 C 12 55 14 30 30 12" stroke="#B98A34" stroke-width="1" fill="none" opacity="0.55"/>
+
+      <use href="#floral-leaf" transform="translate(20,26) rotate(-40) scale(1.3)"/>
+      <use href="#floral-leaf" transform="translate(34,14) rotate(20) scale(1.1)"/>
+      <use href="#floral-leaf" transform="translate(15,46) rotate(-90) scale(1.2)"/>
+
+      <use href="#floral-peony" transform="translate(30,32) scale(1.5)"/>
+      <use href="#floral-rose" transform="translate(52,20) scale(1.3)"/>
+      <use href="#floral-rose" transform="translate(20,54) scale(1.15)"/>
+      <use href="#floral-bud" transform="translate(46,42) rotate(20)"/>
+      <use href="#floral-bud" transform="translate(64,12) rotate(-10) scale(0.9)"/>
+      <use href="#floral-peony" transform="translate(66,34) scale(0.85)"/>
+    </g>
+
+    <g id="floral-rose-wine">
+      <circle cx="0" cy="0" r="9" fill="#4E1626"/>
+      <circle cx="0" cy="0" r="6.2" fill="#6E2439"/>
+      <circle cx="0" cy="0" r="3.4" fill="#A85C6E"/>
+    </g>
+    <g id="floral-peony-wine">
+      <circle cx="0" cy="0" r="11" fill="#6E2439" opacity="0.9"/>
+      <circle cx="0" cy="0" r="8" fill="#8C3450"/>
+      <circle cx="0" cy="0" r="4.5" fill="#C88A98"/>
+    </g>
+
+    <g id="floral-corner-wine">
+      <path d="M8 8 C 30 6 60 6 90 20 C 55 12 30 14 12 30" stroke="#B98A34" stroke-width="1" fill="none" opacity="0.6"/>
+      <path d="M8 8 C 6 30 6 60 20 90 C 12 55 14 30 30 12" stroke="#B98A34" stroke-width="1" fill="none" opacity="0.6"/>
+
+      <use href="#floral-leaf" transform="translate(20,26) rotate(-40) scale(1.3)"/>
+      <use href="#floral-leaf" transform="translate(34,14) rotate(20) scale(1.1)"/>
+      <use href="#floral-leaf" transform="translate(15,46) rotate(-90) scale(1.2)"/>
+
+      <use href="#floral-peony-wine" transform="translate(30,32) scale(1.5)"/>
+      <use href="#floral-rose-wine" transform="translate(52,20) scale(1.3)"/>
+      <use href="#floral-rose-wine" transform="translate(20,54) scale(1.15)"/>
+      <use href="#floral-bud" transform="translate(46,42) rotate(20)"/>
+      <use href="#floral-bud" transform="translate(64,12) rotate(-10) scale(0.9)"/>
+      <use href="#floral-peony-wine" transform="translate(66,34) scale(0.85)"/>
+    </g>
+
+    <g id="floral-strand">
+      <path d="M10 35 C 100 10 200 55 310 30 C 420 10 520 55 610 30" stroke="#B98A34" stroke-width="1" fill="none" opacity="0.5"/>
+      <use href="#floral-leaf" transform="translate(60,26) rotate(-30) scale(0.9)"/>
+      <use href="#floral-leaf" transform="translate(260,40) rotate(160) scale(0.9)"/>
+      <use href="#floral-leaf" transform="translate(460,26) rotate(-30) scale(0.9)"/>
+      <use href="#floral-rose" transform="translate(90,28) scale(1.1)"/>
+      <use href="#floral-peony" transform="translate(190,42) scale(1.3)"/>
+      <use href="#floral-bud" transform="translate(240,20) rotate(20)"/>
+      <use href="#floral-rose" transform="translate(310,32) scale(1.2)"/>
+      <use href="#floral-peony" transform="translate(400,20) scale(1.1)"/>
+      <use href="#floral-bud" transform="translate(450,42) rotate(-20)"/>
+      <use href="#floral-rose" transform="translate(530,28) scale(1.15)"/>
+      <use href="#floral-peony" transform="translate(580,42) scale(0.9)"/>
+    </g>
+  </defs>
+</svg>
+
+<script>
+  var envelope = document.getElementById('envelope');
+  var envScreen = document.getElementById('envelope-screen');
+  var site = document.getElementById('site');
+
+  envelope.addEventListener('click', function(){
+    if(envelope.classList.contains('open')) return;
+    envelope.classList.add('open');
+    setTimeout(function(){
+      envScreen.classList.add('hidden');
+      site.classList.add('visible');
+    }, 1250);
+  });
+
+  var target = new Date('2026-08-10T00:00:00+02:00').getTime();
+  function tick(){
+    var now = Date.now();
+    var diff = Math.max(0, target - now);
+    var d = Math.floor(diff / 86400000);
+    var h = Math.floor((diff % 86400000) / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    document.getElementById('dd').textContent = String(d).padStart(2,'0');
+    document.getElementById('hh').textContent = String(h).padStart(2,'0');
+    document.getElementById('mm').textContent = String(m).padStart(2,'0');
+    document.getElementById('ss').textContent = String(s).padStart(2,'0');
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  var chosen = null;
+  var btnYes = document.getElementById('btn-yes');
+  var btnNo = document.getElementById('btn-no');
+  var form = document.getElementById('rsvp-form');
+  var guestsInput = document.getElementById('rsvp-guests');
+  var thanks = document.getElementById('rsvp-thanks');
+
+  function selectRsvp(val){
+    chosen = val;
+    btnYes.classList.toggle('selected', val === 'yes');
+    btnNo.classList.toggle('selected', val === 'no');
+    thanks.classList.remove('show');
+    form.classList.add('show');
+    guestsInput.style.display = (val === 'yes') ? 'block' : 'none';
+  }
+  btnYes.addEventListener('click', function(){ selectRsvp('yes'); });
+  btnNo.addEventListener('click', function(){ selectRsvp('no'); });
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var name = document.getElementById('rsvp-name').value.trim() || 'Dear guest';
+    form.classList.remove('show');
+    if(chosen === 'yes'){
+      thanks.textContent = 'Thank you, ' + name + '! We can\'t wait to celebrate with you.';
+    } else {
+      thanks.textContent = 'Thank you, ' + name + '. You will be dearly missed.';
+    }
+    thanks.classList.add('show');
+  });
+
+  var reveals = document.querySelectorAll('.reveal');
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){ entry.target.classList.add('in'); }
+    });
+  }, { threshold: 0.15 });
+  reveals.forEach(function(el){ io.observe(el); });
+</script>
+
+</body>
+</html>
